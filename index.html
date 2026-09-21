@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; media-src https:; frame-src https://rdcanais.net https://*.rdcanais.net https://sinalpublicoetv.vercel.app https://*.embedtv.lat; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; upgrade-insecure-requests">
     <title>PlayHub - TV Ao Vivo</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -20,7 +22,7 @@
             }
         }
     </script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -31,29 +33,12 @@
         .animate-pulse-fast {
             animation: pulse-fast 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #07090e;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 3px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
-        }
-        body {
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
-            user-select: none;
-        }
-        img {
-            -webkit-user-drag: none;
-        }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #07090e; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #334155; }
+        #playerSection { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; }
+        img { -webkit-user-drag: none; }
         .glass-panel {
             background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(16px);
@@ -69,6 +54,12 @@
     </style>
 </head>
 <body class="bg-darkbg text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
+
+    <div id="devtoolsWarning" class="hidden fixed inset-0 z-[9999] bg-darkbg/95 backdrop-blur-xl flex-col items-center justify-center text-center p-8">
+        <i class="fa-solid fa-shield-halved text-5xl text-indigo-500 mb-4"></i>
+        <p class="text-white font-bold text-lg">Ferramentas de desenvolvedor detectadas</p>
+        <p class="text-slate-400 text-sm mt-2">Feche o DevTools para continuar assistindo.</p>
+    </div>
 
     <header class="sticky top-0 z-50 glass-nav">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
@@ -87,7 +78,7 @@
             <div class="flex-1 max-w-xl mx-4 hidden md:block">
                 <div class="relative group">
                     <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm group-focus-within:text-indigo-400 transition-colors"></i>
-                    <input type="text" id="searchInput" oninput="filterChannels(event)" placeholder="Pesquisar canais, filmes, esportes..." 
+                    <input type="text" id="searchInput" oninput="filterChannels(event)" placeholder="Pesquisar canais, filmes, esportes..."
                         class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl pl-11 pr-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-inner">
                 </div>
             </div>
@@ -102,7 +93,7 @@
         <div class="p-3 bg-darkbg/90 border-t border-slate-800/40 md:hidden">
             <div class="relative">
                 <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                <input type="text" id="searchMobileInput" oninput="filterChannels(event)" placeholder="Pesquisar canal..." 
+                <input type="text" id="searchMobileInput" oninput="filterChannels(event)" placeholder="Pesquisar canal..."
                     class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-11 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
             </div>
         </div>
@@ -128,10 +119,11 @@
                 </div>
             </div>
 
-            <div class="relative w-full bg-black rounded-3xl overflow-hidden shadow-2xl shadow-black/80 border border-slate-800 aspect-video ring-1 ring-white/10">
-                <div id="iframeContainer" class="w-full h-full">
-                </div>
-            </div>
+           <div class="relative w-full bg-black rounded-3xl overflow-hidden shadow-2xl shadow-black/80 border border-slate-800 aspect-video ring-1 ring-white/10"
+     oncontextmenu="return false;">
+    <div id="iframeContainer" class="w-full h-full relative z-10">
+    </div>
+</div>
         </section>
 
         <div class="flex items-center space-x-3 overflow-x-auto pb-2 scrollbar-none" id="categoryFilters">
@@ -147,8 +139,8 @@
             <button onclick="filterByCategory('Esportes')" class="cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800" data-cat="Esportes">
                 <i class="fa-solid fa-futbol mr-2"></i> Esportes
             </button>
-	    <button onclick="filterByCategory('Canais Abertos')" class="cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800" data-cat="Canais Abertos">
-                <i class="fa-solid fa-tv"></i></i> Canais Abertos
+            <button onclick="filterByCategory('Canais Abertos')" class="cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800" data-cat="Canais Abertos">
+                <i class="fa-solid fa-tv mr-2"></i> Canais Abertos
             </button>
         </div>
 
@@ -191,33 +183,61 @@
     </footer>
 
     <script>
-        document.addEventListener('contextmenu', function(e) {
-            e.preventDefault();
-        });
+        try {
+            if (window.self !== window.top) {
+                window.top.location = window.self.location.href;
+            }
+        } catch (e) {}
 
-        document.addEventListener('keydown', function(e) {
-            if (
-                e.key === 'F12' || 
-                (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'i' || e.key === 'J' || e.key === 'j' || e.key === 'C' || e.key === 'c')) ||
-                (e.ctrlKey && (e.key === 'U' || e.key === 'u' || e.key === 'S' || e.key === 's'))
-            ) {
-                e.preventDefault();
-                e.stopPropagation();
+        (function softDevtoolsWarning() {
+            const overlay = document.getElementById('devtoolsWarning');
+            if (!overlay) return;
+            const THRESHOLD = 180;
+            let isOpen = false;
+            setInterval(() => {
+                const open =
+                    (window.outerWidth - window.innerWidth) > THRESHOLD ||
+                    (window.outerHeight - window.innerHeight) > THRESHOLD;
+                if (open !== isOpen) {
+                    isOpen = open;
+                    overlay.classList.toggle('hidden', !open);
+                    overlay.classList.toggle('flex', open);
+                    if (open && typeof closePlayer === 'function') closePlayer();
+                }
+            }, 1500);
+        })();
+
+        const ALLOWED_STREAM_HOSTS = [
+            'rdcanais.net',
+            'sinalpublicoetv.vercel.app',
+            'embedtv.lat'
+        ];
+
+        function isSafeStreamUrl(url) {
+            try {
+                const u = new URL(url, location.href);
+                if (u.protocol !== 'https:') return false;
+                return ALLOWED_STREAM_HOSTS.some(h =>
+                    u.hostname === h || u.hostname.endsWith('.' + h)
+                );
+            } catch {
                 return false;
             }
-        });
+        }
 
-        setInterval(function() {
-            const startTime = performance.now();
-            debugger;
-            const endTime = performance.now();
-            if (endTime - startTime > 100) {
-                document.body.innerHTML = '<div style="background:#07090e;color:white;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-size:20px;text-align:center;">Acesso negado. Ferramentas de desenvolvedor detectadas.</div>';
+        function escapeHtml(value) {
+            return String(value ?? '').replace(/[&<>"']/g, ch => ({
+                '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+            })[ch]);
+        }
+
+        function safeImageUrl(url) {
+            try {
+                const u = new URL(url, location.href);
+                return (u.protocol === 'https:') ? escapeHtml(u.href) : '';
+            } catch {
+                return '';
             }
-        }, 1000);
-
-        if (window.self !== window.top) {
-            window.top.location = window.self.location;
         }
 
         let channels = [
@@ -277,8 +297,7 @@
                     "https://rdcanais.net/premiereclubes"
                 ]
             },
-
-		{
+            {
                 id: 7,
                 name: "Premiere 2",
                 category: "Esportes",
@@ -287,8 +306,7 @@
                     "https://sinalpublicoetv.vercel.app/?id=premiere2"
                 ]
             },
-
-		{
+            {
                 id: 8,
                 name: "Premiere 3",
                 category: "Esportes",
@@ -297,8 +315,7 @@
                     "https://sinalpublicoetv.vercel.app/?id=premiere3"
                 ]
             },
-
-		{
+            {
                 id: 9,
                 name: "Caze TV",
                 category: "Esportes",
@@ -307,8 +324,7 @@
                     "https://sinalpublicoetv.vercel.app/?id=caze1"
                 ]
             },
-
-		{
+            {
                 id: 10,
                 name: "Prime Video 1",
                 category: "Esportes",
@@ -317,8 +333,7 @@
                     "https://78b14b2a2e1de4a48ea54726bf50b5d2.embedtv.lat/primevideo"
                 ]
             },
-
-		{
+            {
                 id: 11,
                 name: "Prime Video 2",
                 category: "Esportes",
@@ -327,8 +342,7 @@
                     "https://bfd1b80851a4adeff37f6c0df7a8cb08.embedtv.lat/primevideo2"
                 ]
             },
-
-		{
+            {
                 id: 12,
                 name: "Globo RS",
                 category: "Canais Abertos",
@@ -336,26 +350,72 @@
                 urls: [
                     "https://rdcanais.net/globors"
                 ]
+            },
+            {
+                id: 13,
+                name: "Globo RJ",
+                category: "Canais Abertos",
+                logo: "https://cdn.reidoscanais.st/imagens/tvglobo.png",
+                urls: [
+                    "https://rdcanais.net/globorj"
+                ]
+            },
+            {
+                id: 14,
+                name: "Globo SP",
+                category: "Canais Abertos",
+                logo: "https://cdn.reidoscanais.st/imagens/tvglobo.png",
+                urls: [
+                    "https://rdcanais.net/globosp"
+                ]
+            },
+            {
+                id: 15,
+                name: "Band",
+                category: "Canais Abertos",
+                logo: "https://cdn.reidoscanais.st/imagens/band.png",
+                urls: [
+                    "https://rdcanais.net/band"
+                ]
             }
-
         ];
 
-        let favorites = JSON.parse(localStorage.getItem('playhub_favorites')) || [];
+        let favorites = [];
+        try {
+            const parsed = JSON.parse(localStorage.getItem('playhub_favorites'));
+            if (Array.isArray(parsed)) {
+                favorites = parsed.filter(x => Number.isInteger(x));
+            }
+        } catch (e) {
+            favorites = [];
+        }
+
         let currentCategory = 'Todos';
         let showOnlyFavorites = false;
         let activeChannelId = null;
         let activeStreamIndex = 0;
 
         document.addEventListener('DOMContentLoaded', () => {
+            const overlay = document.getElementById('playerOverlay');
+            if (overlay) {
+                overlay.addEventListener('contextmenu', e => e.preventDefault());
+                overlay.addEventListener('click', () => {
+                    overlay.style.pointerEvents = 'none';
+                    setTimeout(() => { overlay.style.pointerEvents = 'auto'; }, 3000);
+                });
+                overlay.addEventListener('mouseleave', () => {
+                    overlay.style.pointerEvents = 'auto';
+                });
+            }
             renderChannels();
         });
 
         function renderChannels() {
             const grid = document.getElementById('channelsGrid');
             const emptyState = document.getElementById('emptyState');
-            const searchQuery = (document.getElementById('searchInput').value || document.getElementById('searchMobileInput').value).toLowerCase();
+            const searchQuery = ((document.getElementById('searchInput').value || '') + (document.getElementById('searchMobileInput').value || '')).toLowerCase();
 
-            grid.innerHTML = '';
+            grid.replaceChildren();
 
             let filtered = channels.filter(channel => {
                 const matchesSearch = channel.name.toLowerCase().includes(searchQuery);
@@ -377,11 +437,16 @@
 
             filtered.forEach(channel => {
                 const isFav = favorites.includes(channel.id);
+                const safeId = Number(channel.id);
+                const safeName = escapeHtml(channel.name);
+                const safeCat = escapeHtml(channel.category);
+                const safeLogo = safeImageUrl(channel.logo);
+
                 const card = document.createElement('div');
                 card.className = "group relative glass-panel hover:bg-cardhover/90 border border-slate-800/80 hover:border-indigo-500/50 rounded-3xl p-5 flex flex-col items-center justify-between transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 cursor-pointer";
-                
+
                 card.innerHTML = `
-                    <button onclick="event.stopPropagation(); toggleFavorite(${channel.id})" class="absolute top-4 right-4 w-9 h-9 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all z-10 shadow-sm">
+                    <button onclick="event.stopPropagation(); toggleFavorite(${safeId})" class="absolute top-4 right-4 w-9 h-9 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all z-10 shadow-sm">
                         <i class="fa-${isFav ? 'solid text-rose-500' : 'regular'} fa-heart text-sm"></i>
                     </button>
 
@@ -390,17 +455,17 @@
                         <span class="text-[9px] font-extrabold tracking-widest text-rose-400 uppercase">AO VIVO</span>
                     </div>
 
-                    <div class="w-full h-28 my-6 flex items-center justify-center p-3 relative group-hover:scale-105 transition-transform duration-300" onclick="playChannel(${channel.id})">
+                    <div class="w-full h-28 my-6 flex items-center justify-center p-3 relative group-hover:scale-105 transition-transform duration-300" onclick="playChannel(${safeId})">
                         <div class="absolute inset-0 bg-indigo-500/5 rounded-2xl filter blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <img src="${channel.logo}" alt="${channel.name}" class="max-h-full max-w-full object-contain filter drop-shadow-lg relative z-10" onerror="this.src='https://via.placeholder.com/150?text=TV'">
+                        <img src="${safeLogo}" alt="${safeName}" referrerpolicy="no-referrer" loading="lazy" class="max-h-full max-w-full object-contain filter drop-shadow-lg relative z-10" onerror="this.src='https://via.placeholder.com/150?text=TV'">
                     </div>
 
-                    <div class="w-full text-center space-y-1.5" onclick="playChannel(${channel.id})">
-                        <h4 class="font-bold text-sm text-slate-100 truncate group-hover:text-indigo-400 transition-colors">${channel.name}</h4>
-                        <span class="inline-block text-[10px] bg-slate-900/90 border border-slate-800 text-slate-400 px-3 py-1 rounded-full font-semibold tracking-wide">${channel.category}</span>
+                    <div class="w-full text-center space-y-1.5" onclick="playChannel(${safeId})">
+                        <h4 class="font-bold text-sm text-slate-100 truncate group-hover:text-indigo-400 transition-colors">${safeName}</h4>
+                        <span class="inline-block text-[10px] bg-slate-900/90 border border-slate-800 text-slate-400 px-3 py-1 rounded-full font-semibold tracking-wide">${safeCat}</span>
                     </div>
 
-                    <button onclick="playChannel(${channel.id})" class="mt-5 w-full py-2.5 bg-indigo-600/15 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-indigo-500/30 hover:border-transparent shadow-sm">
+                    <button onclick="playChannel(${safeId})" class="mt-5 w-full py-2.5 bg-indigo-600/15 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-indigo-500/30 hover:border-transparent shadow-sm">
                         <i class="fa-solid fa-play text-[10px]"></i> Assistir Agora
                     </button>
                 `;
@@ -416,18 +481,22 @@
             activeChannelId = id;
             activeStreamIndex = streamIndex;
 
-            document.getElementById('playerChannelName').innerHTML = `<i class="fa-solid fa-tv text-indigo-400"></i> ${channel.name}`;
+            const nameEl = document.getElementById('playerChannelName');
+            nameEl.replaceChildren();
+            const icon = document.createElement('i');
+            icon.className = 'fa-solid fa-tv text-indigo-400';
+            nameEl.append(icon, ' ' + channel.name);
 
             const optionsContainer = document.getElementById('streamOptionsContainer');
-            optionsContainer.innerHTML = '';
+            optionsContainer.replaceChildren();
 
             if (channel.urls && channel.urls.length > 1) {
-                channel.urls.forEach((url, idx) => {
+                channel.urls.forEach((_, idx) => {
                     const isSelected = idx === streamIndex;
                     const btn = document.createElement('button');
                     btn.className = `px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border ${
-                        isSelected 
-                            ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-indigo-500 shadow-md shadow-indigo-600/30' 
+                        isSelected
+                            ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-indigo-500 shadow-md shadow-indigo-600/30'
                             : 'bg-slate-900/90 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
                     }`;
                     btn.innerHTML = `<i class="fa-solid fa-server text-[10px]"></i> Opção ${idx + 1}`;
@@ -435,12 +504,35 @@
                     optionsContainer.appendChild(btn);
                 });
             } else {
-                optionsContainer.innerHTML = `<span class="text-xs font-semibold text-slate-400 bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-800">Servidor Único</span>`;
+                const span = document.createElement('span');
+                span.className = 'text-xs font-semibold text-slate-400 bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-800';
+                span.textContent = 'Servidor Único';
+                optionsContainer.appendChild(span);
             }
 
             const activeUrl = channel.urls[streamIndex] || channel.urls[0];
             const container = document.getElementById('iframeContainer');
-            container.innerHTML = `<iframe src="${activeUrl}" class="w-full h-full border-0" allowfullscreen allow="autoplay; encrypted-media; picture-in-picture"></iframe>`;
+
+            if (!isSafeStreamUrl(activeUrl)) {
+                const err = document.createElement('div');
+                err.className = 'w-full h-full flex items-center justify-center text-slate-400 text-sm';
+                err.textContent = 'Servidor indisponível ou não autorizado.';
+                container.replaceChildren(err);
+                const playerSection = document.getElementById('playerSection');
+                playerSection.classList.remove('hidden');
+                playerSection.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+
+            const iframe = document.createElement('iframe');
+	iframe.src = activeUrl;
+	iframe.className = 'w-full h-full border-0';
+	iframe.setAttribute('allowfullscreen', '');
+	iframe.setAttribute('allow', 'autoplay; encrypted-media; picture-in-picture; fullscreen');
+	iframe.setAttribute('referrerpolicy', 'no-referrer');
+	iframe.setAttribute('loading', 'lazy');
+
+	container.replaceChildren(iframe);
 
             const playerSection = document.getElementById('playerSection');
             playerSection.classList.remove('hidden');
@@ -450,7 +542,7 @@
         function closePlayer() {
             const playerSection = document.getElementById('playerSection');
             playerSection.classList.add('hidden');
-            document.getElementById('iframeContainer').innerHTML = '';
+            document.getElementById('iframeContainer').replaceChildren();
             activeChannelId = null;
             activeStreamIndex = 0;
         }
