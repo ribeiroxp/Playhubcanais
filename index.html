@@ -11,8 +11,8 @@
             theme: {
                 extend: {
                     colors: {
-                        darkbg: '#0b0f19',
-                        cardbg: '#131c2e',
+                        darkbg: '#07090e',
+                        cardbg: '#0f172a',
                         cardhover: '#1e293b',
                         accent: '#6366f1',
                     }
@@ -22,23 +22,25 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
         @keyframes pulse-fast {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.95); }
         }
         .animate-pulse-fast {
-            animation: pulse-fast 1.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+            animation: pulse-fast 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #0b0f19;
+            background: #07090e;
         }
         ::-webkit-scrollbar-thumb {
             background: #1e293b;
-            border-radius: 4px;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
             background: #334155;
@@ -52,108 +54,140 @@
         img {
             -webkit-user-drag: none;
         }
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-nav {
+            background: rgba(7, 9, 14, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
     </style>
 </head>
-<body class="bg-darkbg text-slate-100 min-h-screen flex flex-col font-sans selection:bg-accent selection:text-white">
+<body class="bg-darkbg text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white">
 
-    <header class="sticky top-0 z-40 bg-darkbg/80 backdrop-blur-md border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="resetFilters()">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                    <i class="fa-solid fa-tv text-white text-lg"></i>
+    <header class="sticky top-0 z-50 glass-nav">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+            <div class="flex items-center space-x-3.5 cursor-pointer group" onclick="resetFilters()">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-pink-600 flex items-center justify-center shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform duration-300">
+                    <i class="fa-solid fa-tv text-white text-xl"></i>
                 </div>
-                <span class="text-xl font-bold bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
-                    Play<span class="text-indigo-500">Hub</span>
-                </span>
+                <div>
+                    <h1 class="text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
+                        Play<span class="text-indigo-500">Hub</span>
+                    </h1>
+                    <span class="text-[10px] uppercase tracking-widest text-indigo-400 font-bold">Streaming Ao Vivo</span>
+                </div>
             </div>
 
-            <div class="flex-1 max-w-md mx-4 hidden md:block">
-                <div class="relative">
-                    <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
-                    <input type="text" id="searchInput" oninput="filterChannels(event)" placeholder="Pesquisar canal..." 
-                        class="w-full bg-slate-900/80 border border-slate-800 rounded-full pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-all">
+            <div class="flex-1 max-w-xl mx-4 hidden md:block">
+                <div class="relative group">
+                    <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm group-focus-within:text-indigo-400 transition-colors"></i>
+                    <input type="text" id="searchInput" oninput="filterChannels(event)" placeholder="Pesquisar canais, filmes, esportes..." 
+                        class="w-full bg-slate-900/90 border border-slate-800 rounded-2xl pl-11 pr-4 py-3 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-inner">
                 </div>
             </div>
 
             <div class="flex items-center space-x-3">
-                <button onclick="toggleFavoritesFilter()" id="favFilterBtn" class="flex items-center space-x-2 px-3.5 py-2 rounded-xl bg-slate-900/80 border border-slate-800 hover:border-slate-700 text-sm text-slate-300 transition-all">
-                    <i class="fa-regular fa-heart text-rose-500" id="favIcon"></i>
+                <button onclick="toggleFavoritesFilter()" id="favFilterBtn" class="flex items-center space-x-2.5 px-4 py-2.5 rounded-2xl bg-slate-900/90 border border-slate-800 hover:border-slate-700 text-sm font-semibold text-slate-300 transition-all shadow-sm hover:shadow">
+                    <i class="fa-regular fa-heart text-rose-500 text-base" id="favIcon"></i>
                     <span class="hidden sm:inline">Favoritos</span>
                 </button>
             </div>
         </div>
-        <div class="p-3 bg-darkbg border-t border-slate-800/50 md:hidden">
+        <div class="p-3 bg-darkbg/90 border-t border-slate-800/40 md:hidden">
             <div class="relative">
-                <i class="fa-solid fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <i class="fa-solid fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
                 <input type="text" id="searchMobileInput" oninput="filterChannels(event)" placeholder="Pesquisar canal..." 
-                    class="w-full bg-slate-900 border border-slate-800 rounded-full pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
+                    class="w-full bg-slate-900 border border-slate-800 rounded-xl pl-11 pr-4 py-2.5 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-indigo-500">
             </div>
         </div>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
-        <section id="playerSection" class="hidden space-y-4">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="flex items-center space-x-3">
-                    <button onclick="closePlayer()" class="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors" title="Voltar">
-                        <i class="fa-solid fa-arrow-left"></i>
+        <section id="playerSection" class="hidden space-y-5 animate-fade-in">
+            <div class="glass-panel p-5 rounded-3xl flex flex-col lg:flex-row lg:items-center justify-between gap-4 border border-indigo-500/20 shadow-2xl shadow-indigo-500/5">
+                <div class="flex items-center space-x-4">
+                    <button onclick="closePlayer()" class="w-11 h-11 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 flex items-center justify-center transition-all hover:scale-105" title="Voltar">
+                        <i class="fa-solid fa-arrow-left text-base"></i>
                     </button>
                     <div>
-                        <h2 id="playerChannelName" class="text-lg font-bold text-white flex items-center gap-2">Nome do Canal</h2>
-                        <span class="text-xs text-indigo-400 font-medium">Reproduzindo transmissão ao vivo</span>
+                        <h2 id="playerChannelName" class="text-xl font-bold text-white flex items-center gap-2.5">Nome do Canal</h2>
+                        <span class="text-xs text-indigo-400 font-semibold tracking-wide uppercase flex items-center gap-1.5 mt-0.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Transmissão HD Ao Vivo
+                        </span>
                     </div>
                 </div>
 
-                <div class="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0" id="streamOptionsContainer">
+                <div class="flex items-center gap-2 overflow-x-auto pb-1 lg:pb-0" id="streamOptionsContainer">
                 </div>
             </div>
 
-            <div class="relative w-full bg-black rounded-2xl overflow-hidden shadow-2xl border border-slate-800 aspect-video">
+            <div class="relative w-full bg-black rounded-3xl overflow-hidden shadow-2xl shadow-black/80 border border-slate-800 aspect-video ring-1 ring-white/10">
                 <div id="iframeContainer" class="w-full h-full">
                 </div>
             </div>
         </section>
 
-        <div class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none" id="categoryFilters">
-            <button onclick="filterByCategory('Todos')" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-600/20" data-cat="Todos">
-                Todos os Canais
+        <div class="flex items-center space-x-3 overflow-x-auto pb-2 scrollbar-none" id="categoryFilters">
+            <button onclick="filterByCategory('Todos')" class="cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-600/30 hover:scale-105" data-cat="Todos">
+                <i class="fa-solid fa-border-all mr-2"></i> Todos os Canais
             </button>
-            <button onclick="filterByCategory('Infantil')" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700" data-cat="Infantil">
-                Infantil
+            <button onclick="filterByCategory('Infantil')" class="cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800" data-cat="Infantil">
+                <i class="fa-solid fa-child mr-2"></i> Infantil
             </button>
-            <button onclick="filterByCategory('Variedades')" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700" data-cat="Variedades">
-                Variedades & Filmes
+            <button onclick="filterByCategory('Variedades')" class="cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800" data-cat="Variedades">
+                <i class="fa-solid fa-film mr-2"></i> Variedades & Filmes
             </button>
-            <button onclick="filterByCategory('Esportes')" class="cat-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700" data-cat="Esportes">
-                Esportes
+            <button onclick="filterByCategory('Esportes')" class="cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800" data-cat="Esportes">
+                <i class="fa-solid fa-futbol mr-2"></i> Esportes
+            </button>
+	    <button onclick="filterByCategory('Canais Abertos')" class="cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800" data-cat="Canais Abertos">
+                <i class="fa-solid fa-tv"></i></i> Canais Abertos
             </button>
         </div>
 
-        <section class="space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 id="sectionTitle" class="text-xl font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-fire text-indigo-500"></i> Canais Disponíveis
+        <section class="space-y-5">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-4">
+                <h3 id="sectionTitle" class="text-xl font-extrabold text-white flex items-center gap-3 tracking-tight">
+                    <div class="w-8 h-8 rounded-xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
+                        <i class="fa-solid fa-fire text-sm"></i>
+                    </div>
+                    Canais Disponíveis
                 </h3>
-                <span id="channelCount" class="text-xs text-slate-500 bg-slate-900 px-2.5 py-1 rounded-full border border-slate-800">0 canais</span>
+                <span id="channelCount" class="text-xs font-bold text-indigo-300 bg-indigo-950/60 border border-indigo-500/30 px-3.5 py-1.5 rounded-full shadow-sm">0 canais</span>
             </div>
 
-            <div id="channelsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            <div id="channelsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
             </div>
 
-            <div id="emptyState" class="hidden flex-col items-center justify-center py-16 text-center space-y-3">
-                <div class="w-16 h-16 rounded-2xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 text-2xl">
-                    <i class="fa-solid fa-ghost"></i>
+            <div id="emptyState" class="hidden flex-col items-center justify-center py-20 text-center space-y-4">
+                <div class="w-20 h-20 rounded-3xl bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-600 text-3xl shadow-inner">
+                    <i class="fa-solid fa-satellite-dish animate-pulse"></i>
                 </div>
-                <p class="text-slate-400 font-medium">Nenhum canal encontrado.</p>
-                <button onclick="resetFilters()" class="text-xs text-indigo-400 hover:underline">Limpar filtros</button>
+                <div class="space-y-1">
+                    <p class="text-slate-200 font-bold text-base">Nenhum canal encontrado</p>
+                    <p class="text-xs text-slate-500">Tente buscar por outro termo ou categoria.</p>
+                </div>
+                <button onclick="resetFilters()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-semibold transition-all shadow-md shadow-indigo-600/20">Limpar filtros</button>
             </div>
         </section>
 
     </main>
 
-    <footer class="mt-auto border-t border-slate-800 bg-darkbg/50 py-6 text-center text-xs text-slate-500">
-        <p>PlayHub &copy; 2026 — Transmissões Ao Vivo</p>
+    <footer class="mt-auto border-t border-slate-800/80 bg-darkbg py-8 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="font-medium text-slate-400">PlayHub Core Ativo &bull; Servidores Estáveis</span>
+            </div>
+            <p>PlayHub &copy; 2026 — Todos os direitos reservados</p>
+        </div>
     </footer>
 
     <script>
@@ -178,7 +212,7 @@
             debugger;
             const endTime = performance.now();
             if (endTime - startTime > 100) {
-                document.body.innerHTML = '<div style="background:#0b0f19;color:white;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-size:20px;text-align:center;">Acesso negado. Ferramentas de desenvolvedor detectadas.</div>';
+                document.body.innerHTML = '<div style="background:#07090e;color:white;height:100vh;display:flex;align-items:center;justify-content:center;font-family:sans-serif;font-size:20px;text-align:center;">Acesso negado. Ferramentas de desenvolvedor detectadas.</div>';
             }
         }, 1000);
 
@@ -210,7 +244,7 @@
                 id: 3,
                 name: "Discovery Channel",
                 category: "Variedades",
-                logo: "https://upload.wikimedia.org/wikipedia/commons/2/27/Discovery_Channel_-_Logo_2019.svg",
+                logo: "https://d1r94zrla0glo-cloudfront.vercel.app/sinalpublico/logo/discovery.png",
                 urls: [
                     "https://rdcanais.net/discoverychannel"
                 ]
@@ -236,13 +270,74 @@
             },
             {
                 id: 6,
-                name: "Premiere",
+                name: "Premiere Clubes",
                 category: "Esportes",
                 logo: "https://cdn.reidoscanais.st/imagens/premiere.png",
                 urls: [
                     "https://rdcanais.net/premiereclubes"
                 ]
+            },
+
+		{
+                id: 7,
+                name: "Premiere 2",
+                category: "Esportes",
+                logo: "https://d1r94zrla0glo-cloudfront.vercel.app/sinalpublico/logo/premiere-2.png",
+                urls: [
+                    "https://sinalpublicoetv.vercel.app/?id=premiere2"
+                ]
+            },
+
+		{
+                id: 8,
+                name: "Premiere 3",
+                category: "Esportes",
+                logo: "https://d1r94zrla0glo-cloudfront.vercel.app/sinalpublico/logo/premiere-3.png",
+                urls: [
+                    "https://sinalpublicoetv.vercel.app/?id=premiere3"
+                ]
+            },
+
+		{
+                id: 9,
+                name: "Caze TV",
+                category: "Esportes",
+                logo: "https://cdn.reidoscanais.st/imagens/cazetv.webp",
+                urls: [
+                    "https://sinalpublicoetv.vercel.app/?id=caze1"
+                ]
+            },
+
+		{
+                id: 10,
+                name: "Prime Video 1",
+                category: "Esportes",
+                logo: "https://img.faz-o-eli.online/primevideo.png",
+                urls: [
+                    "https://78b14b2a2e1de4a48ea54726bf50b5d2.embedtv.lat/primevideo"
+                ]
+            },
+
+		{
+                id: 11,
+                name: "Prime Video 2",
+                category: "Esportes",
+                logo: "https://img.faz-o-eli.online/primevideo.png",
+                urls: [
+                    "https://bfd1b80851a4adeff37f6c0df7a8cb08.embedtv.lat/primevideo2"
+                ]
+            },
+
+		{
+                id: 12,
+                name: "Globo RS",
+                category: "Canais Abertos",
+                logo: "https://cdn.reidoscanais.st/imagens/tvglobo.png",
+                urls: [
+                    "https://rdcanais.net/globors"
+                ]
             }
+
         ];
 
         let favorites = JSON.parse(localStorage.getItem('playhub_favorites')) || [];
@@ -283,28 +378,29 @@
             filtered.forEach(channel => {
                 const isFav = favorites.includes(channel.id);
                 const card = document.createElement('div');
-                card.className = "group relative bg-cardbg hover:bg-cardhover border border-slate-800 hover:border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-between transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/5 cursor-pointer";
+                card.className = "group relative glass-panel hover:bg-cardhover/90 border border-slate-800/80 hover:border-indigo-500/50 rounded-3xl p-5 flex flex-col items-center justify-between transition-all duration-300 hover:shadow-2xl hover:shadow-indigo-500/10 hover:-translate-y-1 cursor-pointer";
                 
                 card.innerHTML = `
-                    <button onclick="event.stopPropagation(); toggleFavorite(${channel.id})" class="absolute top-3 right-3 text-slate-500 hover:text-rose-500 transition-colors z-10 p-1">
-                        <i class="fa-${isFav ? 'solid text-rose-500' : 'regular'} fa-heart text-base"></i>
+                    <button onclick="event.stopPropagation(); toggleFavorite(${channel.id})" class="absolute top-4 right-4 w-9 h-9 rounded-xl bg-slate-900/80 hover:bg-slate-800 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-rose-500 transition-all z-10 shadow-sm">
+                        <i class="fa-${isFav ? 'solid text-rose-500' : 'regular'} fa-heart text-sm"></i>
                     </button>
 
-                    <div class="absolute top-3 left-3 flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/20 px-2 py-0.5 rounded-full z-10">
+                    <div class="absolute top-4 left-4 flex items-center gap-1.5 bg-rose-500/10 border border-rose-500/30 px-2.5 py-1 rounded-full z-10 shadow-sm">
                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse-fast"></span>
-                        <span class="text-[10px] font-bold tracking-wider text-rose-400 uppercase">Ao Vivo</span>
+                        <span class="text-[9px] font-extrabold tracking-widest text-rose-400 uppercase">AO VIVO</span>
                     </div>
 
-                    <div class="w-full h-24 my-6 flex items-center justify-center p-2 relative group-hover:scale-105 transition-transform duration-300" onclick="playChannel(${channel.id})">
-                        <img src="${channel.logo}" alt="${channel.name}" class="max-h-full max-w-full object-contain filter drop-shadow-md" onerror="this.src='https://via.placeholder.com/150?text=TV'">
+                    <div class="w-full h-28 my-6 flex items-center justify-center p-3 relative group-hover:scale-105 transition-transform duration-300" onclick="playChannel(${channel.id})">
+                        <div class="absolute inset-0 bg-indigo-500/5 rounded-2xl filter blur-xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <img src="${channel.logo}" alt="${channel.name}" class="max-h-full max-w-full object-contain filter drop-shadow-lg relative z-10" onerror="this.src='https://via.placeholder.com/150?text=TV'">
                     </div>
 
-                    <div class="w-full text-center space-y-1" onclick="playChannel(${channel.id})">
-                        <h4 class="font-bold text-sm text-slate-200 truncate group-hover:text-indigo-400 transition-colors">${channel.name}</h4>
-                        <span class="inline-block text-[10px] bg-slate-900 border border-slate-800 text-slate-400 px-2.5 py-0.5 rounded-md font-medium">${channel.category}</span>
+                    <div class="w-full text-center space-y-1.5" onclick="playChannel(${channel.id})">
+                        <h4 class="font-bold text-sm text-slate-100 truncate group-hover:text-indigo-400 transition-colors">${channel.name}</h4>
+                        <span class="inline-block text-[10px] bg-slate-900/90 border border-slate-800 text-slate-400 px-3 py-1 rounded-full font-semibold tracking-wide">${channel.category}</span>
                     </div>
 
-                    <button onclick="playChannel(${channel.id})" class="mt-4 w-full py-2 bg-indigo-600/10 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-xl text-xs font-semibold transition-all flex items-center justify-center gap-2 border border-indigo-500/20 hover:border-transparent">
+                    <button onclick="playChannel(${channel.id})" class="mt-5 w-full py-2.5 bg-indigo-600/15 hover:bg-indigo-600 text-indigo-400 hover:text-white rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 border border-indigo-500/30 hover:border-transparent shadow-sm">
                         <i class="fa-solid fa-play text-[10px]"></i> Assistir Agora
                     </button>
                 `;
@@ -320,7 +416,7 @@
             activeChannelId = id;
             activeStreamIndex = streamIndex;
 
-            document.getElementById('playerChannelName').innerHTML = `<i class="fa-solid fa-tv text-indigo-500"></i> ${channel.name}`;
+            document.getElementById('playerChannelName').innerHTML = `<i class="fa-solid fa-tv text-indigo-400"></i> ${channel.name}`;
 
             const optionsContainer = document.getElementById('streamOptionsContainer');
             optionsContainer.innerHTML = '';
@@ -329,17 +425,17 @@
                 channel.urls.forEach((url, idx) => {
                     const isSelected = idx === streamIndex;
                     const btn = document.createElement('button');
-                    btn.className = `px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 border ${
+                    btn.className = `px-3.5 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 border ${
                         isSelected 
-                            ? 'bg-indigo-600 text-white border-indigo-500 shadow-md shadow-indigo-600/20' 
-                            : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
+                            ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white border-indigo-500 shadow-md shadow-indigo-600/30' 
+                            : 'bg-slate-900/90 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
                     }`;
                     btn.innerHTML = `<i class="fa-solid fa-server text-[10px]"></i> Opção ${idx + 1}`;
                     btn.onclick = () => playChannel(id, idx);
                     optionsContainer.appendChild(btn);
                 });
             } else {
-                optionsContainer.innerHTML = `<span class="text-xs text-slate-500 bg-slate-900 px-3 py-1.5 rounded-lg border border-slate-800">Opção Única</span>`;
+                optionsContainer.innerHTML = `<span class="text-xs font-semibold text-slate-400 bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-800">Servidor Único</span>`;
             }
 
             const activeUrl = channel.urls[streamIndex] || channel.urls[0];
@@ -375,11 +471,11 @@
             const icon = document.getElementById('favIcon');
 
             if (showOnlyFavorites) {
-                btn.classList.add('bg-indigo-600/10', 'border-indigo-500/50', 'text-indigo-400');
+                btn.classList.add('bg-indigo-600/20', 'border-indigo-500/50', 'text-indigo-300');
                 icon.classList.remove('fa-regular');
                 icon.classList.add('fa-solid', 'text-rose-500');
             } else {
-                btn.classList.remove('bg-indigo-600/10', 'border-indigo-500/50', 'text-indigo-400');
+                btn.classList.remove('bg-indigo-600/20', 'border-indigo-500/50', 'text-indigo-300');
                 icon.classList.remove('fa-solid');
                 icon.classList.add('fa-regular');
             }
@@ -390,9 +486,9 @@
             currentCategory = cat;
             document.querySelectorAll('.cat-btn').forEach(btn => {
                 if (btn.dataset.cat === cat) {
-                    btn.className = "cat-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-indigo-600 text-white shadow-lg shadow-indigo-600/20";
+                    btn.className = "cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-600/30 hover:scale-105";
                 } else {
-                    btn.className = "cat-btn px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all bg-slate-900 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700";
+                    btn.className = "cat-btn px-5 py-2.5 rounded-2xl text-sm font-semibold whitespace-nowrap transition-all bg-slate-900/90 border border-slate-800 text-slate-400 hover:text-white hover:border-slate-700 hover:bg-slate-800";
                 }
             });
             renderChannels();
